@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <!-- Barra superior con imagen centrada -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="244dp"
+        android:background="#800080"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="218dp"
+            android:layout_height="118dp"
+            android:src="@drawable/img_princ" />
+
+        <TextView
+            android:id="@+id/tv_museo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Museo Lucas Braulio Areco"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="8dp"/>
+    </LinearLayout>
+
+    <!-- Formulario de usuario -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <EditText
+            android:id="@+id/etNlegajo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Num. Legajo"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
+            android:backgroundTint="@android:color/black"/>
+
+        <EditText
+            android:id="@+id/etUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Usuario"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
+            android:backgroundTint="@android:color/black"/>
+
+        <EditText
+            android:id="@+id/etContrasenia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Contraseña"
+            android:inputType="textPassword"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
+            android:backgroundTint="@android:color/black"/>
+
+        <Button
+            android:id="@+id/btnConfirmar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Confirmar"/>
+    </LinearLayout>
+</LinearLayout>
