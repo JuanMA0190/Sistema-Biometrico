@@ -52,31 +52,29 @@ class UsuarioActivity : ComponentActivity() {
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         val serverResponse = response.body()
-                        val message = serverResponse?.mensaje
-                            ?: serverResponse?.error
-                            ?: "Asistencia registrada exitosamente"
+                        val message = serverResponse?.mensaje ?: "Asistencia registrada exitosamente"
 
-                        Toast.makeText(
-                            applicationContext,
-                            message,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
 
-                        // Cierra la actividad después de 1 segundo (para que se vea el Toast)
                         Handler(Looper.getMainLooper()).postDelayed({
                             finish()
                             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
                         }, 1000)
                     } else {
-                        // Manejar errores HTTP (4xx, 5xx)
-                        val errorMessage = parseErrorResponse(response.errorBody())
-                            ?: "Error desconocido (Código ${response.code()})"
+                        // 🔹 Capturar código 403 (usuario inactivo)
+                        if (response.code() == 403) {
+                            Toast.makeText(
+                                applicationContext,
+                                "No se puede registrar asistencia. El usuario está INACTIVO.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            // Otros errores (400, 500, etc.)
+                            val errorMessage = parseErrorResponse(response.errorBody())
+                                ?: "Error desconocido (Código ${response.code()})"
 
-                        Toast.makeText(
-                            applicationContext,
-                            errorMessage,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                            Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             } catch (e: Exception) {

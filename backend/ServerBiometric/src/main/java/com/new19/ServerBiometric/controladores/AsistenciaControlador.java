@@ -2,6 +2,7 @@ package com.new19.ServerBiometric.controladores;
 
 import com.new19.ServerBiometric.dto.AsistenciaDTO;
 import com.new19.ServerBiometric.entidades.Asistencia;
+import com.new19.ServerBiometric.entidades.EstadoPersonal;
 import com.new19.ServerBiometric.entidades.Usuario;
 import com.new19.ServerBiometric.repositorio.AsistenciaRepositorio;
 import com.new19.ServerBiometric.repositorio.UsuarioRepositorio;
@@ -42,7 +43,7 @@ public class AsistenciaControlador {
 
         try {
             Long legajo = Long.parseLong(dto.getNLegajo());
-            Optional<Usuario> usuarioOpt = usuarioRepository.findById(legajo);
+            Optional<Usuario> usuarioOpt = usuarioRepository.findUsuarioConEstado(legajo);
 
             if (!usuarioOpt.isPresent()) {
                 response.put("error", "Usuario no encontrado con nLegajo: " + dto.getNLegajo());
@@ -59,6 +60,12 @@ public class AsistenciaControlador {
             if (!BCrypt.checkpw(dto.getContrasenia(), usuario.getPassword())) {
                 response.put("error", "Contraseña incorrecta");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+
+            // 🔴 VALIDACIÓN DEL ESTADO
+            if (usuario.getEstado() == EstadoPersonal.INACTIVO) {
+                response.put("error", "El usuario está INACTIVO y no puede registrar asistencia");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
             }
 
             Asistencia asistencia = new Asistencia();

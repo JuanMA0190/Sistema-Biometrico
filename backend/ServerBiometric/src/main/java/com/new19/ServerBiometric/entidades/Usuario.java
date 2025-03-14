@@ -1,12 +1,10 @@
 package com.new19.ServerBiometric.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "usuarios")
-public class Usuario {
+public class Usuario extends Personal  {
     @Id
     private Long nLegajo;  // Identificador único (de Personal)
 
