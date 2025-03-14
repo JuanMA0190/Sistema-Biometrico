@@ -3,6 +3,8 @@ package com.example.applicationbiometric
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -24,6 +26,7 @@ class UsuarioActivity : ComponentActivity() {
         setContentView(R.layout.activity_usuario)
 
         val editNLegajo = findViewById<EditText>(R.id.etNlegajo)
+        setupNumberValidation(editNLegajo)
         val editUsuario = findViewById<EditText>(R.id.etUsuario)
         val editPassword = findViewById<EditText>(R.id.etContrasenia)
         val btnEnviar = findViewById<Button>(R.id.btnConfirmar)
@@ -87,6 +90,29 @@ class UsuarioActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun setupNumberValidation(editText: EditText) {
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(editable: Editable?) {
+                editable?.let {
+                    val input = it.toString()
+                    // Verificar si contiene caracteres no numéricos
+                    if (input.isNotEmpty() && !input.matches(Regex("^\\d+$"))) {
+                        // Limpiar el campo y mostrar advertencia
+                        editText.text.clear()
+                        Toast.makeText(
+                            this@UsuarioActivity,
+                            "Solo se aceptan números en este campo",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        })
     }
 
     // Función para parsear errores del servidor
