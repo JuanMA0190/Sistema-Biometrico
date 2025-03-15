@@ -1,0 +1,36 @@
+# Ignorar archivos de compilación
+*.class
+*.jar
+*.war
+*.ear
+
+# Ignorar directorio de compilación (Maven y Gradle)
+target/
+build/
+
+# Ignorar directorio de dependencias externas (Gradle)
+.gradle/
+out/
+
+# Ignorar archivos generados por el IDE
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# VSCode
+.vscode/
+
+# Ignorar archivos de configuración o entornos locales
+*.env
+*.properties
+*.log
+
+# Ignorar archivos de configuración del sistema operativo
+.DS_Store
+Thumbs.db

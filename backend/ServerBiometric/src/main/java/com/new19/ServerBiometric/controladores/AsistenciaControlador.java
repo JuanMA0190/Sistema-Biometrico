@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,12 +64,31 @@ public class AsistenciaControlador {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
 
-            // 🔴 VALIDACIÓN DEL ESTADO
+            // 🔹 VALIDACIÓN DEL ESTADO
             if (usuario.getEstado() == EstadoPersonal.INACTIVO) {
+                System.out.println("❌ Usuario INACTIVO detectado: " + usuario.getNLegajo());
                 response.put("error", "El usuario está INACTIVO y no puede registrar asistencia");
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
             }
 
+            // 🔹 VALIDACIÓN DE TIEMPO ENTRE REGISTROS (8 HORAS)
+            Optional<Asistencia> ultimaAsistenciaOpt = asistenciaRepository.findUltimaAsistencia(legajo);
+            if (ultimaAsistenciaOpt.isPresent()) {
+                Asistencia ultimaAsistencia = ultimaAsistenciaOpt.get();
+                LocalDateTime ultimaFechaHora = LocalDateTime.of(ultimaAsistencia.getFecha(), ultimaAsistencia.getHorario());
+                LocalDateTime ahora = LocalDateTime.now();
+                Duration diferencia = Duration.between(ultimaFechaHora, ahora);
+
+                System.out.println("🕒 Última asistencia registrada hace: " + diferencia.toHours() + " horas");
+
+                if (diferencia.toHours() < 8) {
+                    System.out.println("⏳ Restricción de 8 horas activada para: " + usuario.getNLegajo());
+                    response.put("error", "Debe esperar al menos 8 horas para registrar una nueva asistencia");
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+                }
+            }
+
+            // 🔹 REGISTRAR ASISTENCIA
             Asistencia asistencia = new Asistencia();
             asistencia.setUsuario(usuario);
             asistencia.setFecha(LocalDate.now());

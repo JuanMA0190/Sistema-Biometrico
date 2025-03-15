@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -45,48 +46,30 @@ class UsuarioActivity : ComponentActivity() {
     }
 
     private fun enviarDatosAlServidor(nLegajo: String, usuario: String, password: String) {
-        // Aquí decides cómo obtener el nLegajo; por ejemplo, para esta prueba, usamos el dni
-        // Crea el objeto AsistenciaDTO
-        val asistenciaDTO = AsistenciaDTO(nLegajo = nLegajo, nombreUsuario = usuario, contrasenia = password)
+        val asistenciaDTO = AsistenciaDTO(nLegajo, usuario, password)
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitClient.instance.registrarAsistencia(asistenciaDTO)
+
                 withContext(Dispatchers.Main) {
+                    Log.d("API_RESPONSE", "Código: ${response.code()}") // 🛠 LOG PARA DEPURAR
+
                     if (response.isSuccessful) {
                         val serverResponse = response.body()
                         val message = serverResponse?.mensaje ?: "Asistencia registrada exitosamente"
-
                         Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
-
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            finish()
-                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                        }, 1000)
                     } else {
-                        // 🔹 Capturar código 403 (usuario inactivo)
-                        if (response.code() == 403) {
-                            Toast.makeText(
-                                applicationContext,
-                                "No se puede registrar asistencia. El usuario está INACTIVO.",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        } else {
-                            // Otros errores (400, 500, etc.)
-                            val errorMessage = parseErrorResponse(response.errorBody())
-                                ?: "Error desconocido (Código ${response.code()})"
-
-                            Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_SHORT).show()
-                        }
+                        val errorMessage = parseErrorResponse(response.errorBody()) ?: "Error desconocido (${response.code()})"
+                        Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_LONG).show()
+                        Log.e("API_ERROR", "Código: ${response.code()}, Mensaje: $errorMessage") // 🛠 LOG PARA VER EL ERROR
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        applicationContext,
-                        "Error de conexión: ${e.message ?: "Verifica tu conexión a Internet"}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    val errorMsg = "Error de conexión: ${e.message}"
+                    Toast.makeText(applicationContext, errorMsg, Toast.LENGTH_LONG).show()
+                    Log.e("NETWORK_ERROR", errorMsg) // 🛠 LOG PARA ERRORES DE RED
                 }
             }
         }
