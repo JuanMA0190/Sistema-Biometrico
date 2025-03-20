@@ -59,6 +59,10 @@ class UsuarioActivity : ComponentActivity() {
                         val serverResponse = response.body()
                         val message = serverResponse?.mensaje ?: "Asistencia registrada exitosamente"
                         Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+                        Handler(Looper.getMainLooper()).postDelayed({
+                             finish()
+                             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                         }, 1000)
                     } else {
                         val errorMessage = parseErrorResponse(response.errorBody()) ?: "Error desconocido (${response.code()})"
                         Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_LONG).show()
