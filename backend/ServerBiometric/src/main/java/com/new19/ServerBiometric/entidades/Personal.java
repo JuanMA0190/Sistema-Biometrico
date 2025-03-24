@@ -30,7 +30,6 @@ public class Personal implements Serializable {
     @Column(nullable = false)
     private EstadoPersonal estado;
 
-    // Getters y Setters
     public Long getNLegajo() {
         return nLegajo;
     }

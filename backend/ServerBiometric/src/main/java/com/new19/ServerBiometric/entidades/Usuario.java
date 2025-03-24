@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "usuarios")
 public class Usuario extends Personal  {
     @Id
-    private Long nLegajo;  // Identificador único (de Personal)
+    private Long nLegajo; 
 
     private String nombreUsuario;
     private String contrasenia;

@@ -64,14 +64,14 @@ public class AsistenciaControlador {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
 
-            // 🔹 VALIDACIÓN DEL ESTADO
+            // VALIDACIÓN DEL ESTADO
             if (usuario.getEstado() == EstadoPersonal.INACTIVO) {
                 System.out.println("❌ Usuario INACTIVO detectado: " + usuario.getNLegajo());
                 response.put("error", "El usuario está INACTIVO y no puede registrar asistencia");
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
             }
 
-            // 🔹 VALIDACIÓN DE TIEMPO ENTRE REGISTROS (8 HORAS)
+            // Validación de tiempo entre registro y registro(8 HORAS)
             Optional<Asistencia> ultimaAsistenciaOpt = asistenciaRepository.findUltimaAsistencia(legajo);
             if (ultimaAsistenciaOpt.isPresent()) {
                 Asistencia ultimaAsistencia = ultimaAsistenciaOpt.get();
@@ -88,7 +88,7 @@ public class AsistenciaControlador {
                 }
             }
 
-            // 🔹 REGISTRAR ASISTENCIA
+            // Registrar asistencia
             Asistencia asistencia = new Asistencia();
             asistencia.setUsuario(usuario);
             asistencia.setFecha(LocalDate.now());
